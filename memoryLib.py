@@ -2,17 +2,18 @@ import math
 import ast
 
 class memory():
-    def __init__(self, name, x, y, foreign = None):
+    def __init__(self, name, x, y):
         self.name = name
-        self.memory = self.initMemory(x, y)
-        self.foreign = foreign
+        self.memory = {}
+        self.free_list = []
+        self.x, self.y = x, y
+        self.print_memory = self.initMemory(x, y)
+        self.change = False
 
     def initMemory(self, x, y): return [['' for j in range(x)] for i in range(y)]
     
     def getName(self): return self.name
 
-    def getForeignName(self): return self.foreign.getName()
-    
     def getValue(self, key):
         """
         Returns the value stored in the memory at the given key.
@@ -22,7 +23,6 @@ class memory():
         - empty key: returns None
         - hexadecimal key: '0x' followed by a hexadecimal number
         - decimal key: a string or int representing a decimal number
-        - coordinate key: a tuple of two ints representing the coordinates
 
         Returns None if the key is invalid or out of range of the memory.
         """
@@ -32,31 +32,14 @@ class memory():
             return
 
         # hexadecimal key
-        if key[0:2] == '0x':
-            try:
-                key = int(key[2:], 16)
-                x = math.floor(key / len(self.memory[0]))
-                y = key % len(self.memory[0])
-            except ValueError:
-                print("Invalid key: invalid hexadecimal key!")
-                return
+        if key[0:2] == '0x': pass
 
         # decimal key
         elif type(key) == str:
             try:
-                key = int(key)
-                x = math.floor(key / len(self.memory[0]))
-                y = key % len(self.memory[0])
+                key = hex(key)
             except ValueError:
                 print("Invalid key: invalid decimal key!")
-                return
-    
-        # coordinate key
-        elif type(key) == tuple:
-            try:
-                x, y = key[0], key[1]
-            except (ValueError, TypeError):
-                print("Invalid key: invalid coordinate key!")
                 return
 
         # invalid key type
@@ -65,9 +48,9 @@ class memory():
             return
         
         try:
-            return self.memory[x][y]
+            return self.memory[key]
         except IndexError:
-            print("Memory index is out of range of the memory!")
+            print("Memory place does not contain any value.")
             return
 
     def setValue(self, key, value):
@@ -76,31 +59,14 @@ class memory():
             return
 
         # hexadecimal key
-        if key[0:2] == '0x':
-            try:
-                key = int(key[2:], 16)
-                x = math.floor(key / len(self.memory[0]))
-                y = key % len(self.memory[0])
-            except ValueError:
-                print("Invalid key: invalid hexadecimal key!")
-                return
+        if key[0:2] == '0x': pass
 
         # decimal key
         elif type(key) == str:
             try:
-                key = int(key)
-                x = math.floor(key / len(self.memory[0]))
-                y = key % len(self.memory[0])
+                key = hex(key)
             except ValueError:
                 print("Invalid key: invalid decimal key!")
-                return
-    
-        # coordinate key
-        elif type(key) == tuple:
-            try:
-                x, y = key[0], key[1]
-            except (ValueError, TypeError):
-                print("Invalid key: invalid coordinate key!")
                 return
 
         # invalid key type
@@ -109,18 +75,26 @@ class memory():
             return
 
         try:
-            self.memory[x][y] = value
+            self.memory[key] = value
+            self.change = True
         except IndexError:
             print("Memory index is out of range of the memory!")
             return
 
     def printMemory(self):
-        for i in range(len(self.memory)):
-            print(self.memory[i])
+        if self.change: # change has been made, must convert memory to print_memory
+            self.memoryConvert('MTP')
+
+        for i in range(len(self.print_memory)):
+            print(self.print_memory[i])
         return
     
     def saveMemory(self):
         global new
+
+        if self.change: # change has been made, must convert memory to print_memory
+            self.memoryConvert('MTP')
+
         with open("memoryLog.txt", 'r') as f:
             # check if the memory log exists
             if f.readlines().count(f"{self.name}:\n") == 0: new = True
@@ -132,8 +106,8 @@ class memory():
         if new:
             with open("memoryLog.txt", 'a') as f:
                 f.write(f"{self.name}:\n")
-                for i in range(len(self.memory)):
-                    f.write(str(self.memory[i]) + "\n")
+                for i in range(len(self.print_memory)):
+                    f.write(str(self.print_memory[i]) + "\n")
                 f.write("\n")
                 f.close()
                 
@@ -166,7 +140,7 @@ class memory():
                 lines = f.readlines()
                 f.close()
             
-            for memLine in self.memory[::-1]:
+            for memLine in self.print_memory[::-1]:
                 lines.insert(targetLine + 1, str(memLine) + "\n")
 
             with open("memoryLog.txt", 'w') as f:
@@ -190,5 +164,31 @@ class memory():
             if line == f"{self.name}:\n":
                 fetching = True
 
-        self.memory = fetch
+        self.print_memory = fetch
+        self.memoryConvert('PTM')
         return
+
+    def memoryConvert(self, mode):
+        if mode == 'MTP': # memory to print memory
+            self.print_memory = self.initMemory(self.x, self.y)
+            for i in range(len(self.memory)):
+                self.print_memory[i // self.x][i % self.x] = self.memory[hex(i)]
+            self.change = False
+
+        elif mode == 'PTM': # print memory to memory
+            self.memory = {}
+            for y in range(len(self.print_memory)):
+                for x in range(len(self.print_memory[y])):
+                    if self.print_memory[y][x] is not '': self.memory[hex(y * self.x + x)] = self.print_memory[y][x]
+            self.change = False
+
+        else:
+            print("Invalid mode!")
+
+        return
+
+    def malloc(self, size):
+        pass
+
+    def free(self, address):
+        pass
