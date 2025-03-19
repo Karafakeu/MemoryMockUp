@@ -4,11 +4,11 @@ import ast
 class memory():
     def __init__(self, name, x, y):
         self.name = name
-        self.memory = {}
-        self.free_list = []
         self.x, self.y = x, y
-        self.print_memory = self.initMemory(x, y)
         self.change = False
+        self.memory = {}
+        self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(x * y)]
+        self.print_memory = self.initMemory(x, y)
 
     def initMemory(self, x, y): return [['' for j in range(x)] for i in range(y)]
     
@@ -179,7 +179,7 @@ class memory():
             self.memory = {}
             for y in range(len(self.print_memory)):
                 for x in range(len(self.print_memory[y])):
-                    if self.print_memory[y][x] is not '': self.memory[hex(y * self.x + x)] = self.print_memory[y][x]
+                    if self.print_memory[y][x] != '': self.memory[hex(y * self.x + x)] = self.print_memory[y][x]
             self.change = False
 
         else:
