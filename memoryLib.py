@@ -1,4 +1,3 @@
-import math
 import ast
 
 class memory():
@@ -49,7 +48,7 @@ class memory():
         
         try:
             return self.memory[key]
-        except IndexError:
+        except KeyError:
             print("Memory place does not contain any value.")
             return
 
@@ -171,15 +170,18 @@ class memory():
     def memoryConvert(self, mode):
         if mode == 'MTP': # memory to print memory
             self.print_memory = self.initMemory(self.x, self.y)
-            for i in range(len(self.memory)):
-                self.print_memory[i // self.x][i % self.x] = self.memory[hex(i)]
+            for i in range(self.x * self.y):
+                try:
+                    self.print_memory[i // self.x][i % self.x] = self.memory[f"0x{hex(i)[2:].zfill(8)}"]
+                except KeyError:
+                    self.print_memory[i // self.x][i % self.x] = ''
             self.change = False
 
         elif mode == 'PTM': # print memory to memory
             self.memory = {}
             for y in range(len(self.print_memory)):
                 for x in range(len(self.print_memory[y])):
-                    if self.print_memory[y][x] != '': self.memory[hex(y * self.x + x)] = self.print_memory[y][x]
+                    if self.print_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.print_memory[y][x]
             self.change = False
 
         else:
