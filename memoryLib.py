@@ -7,7 +7,7 @@ class memory():
         self.change = False
         self.memory = {}
         self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(x * y)]
-        self.print_memory = self.initMemory(x, y)
+        self.p_memory = self.initMemory(x, y)
 
     def initMemory(self, x, y): return [['' for j in range(x)] for i in range(y)]
     
@@ -81,17 +81,17 @@ class memory():
             return
 
     def printMemory(self):
-        if self.change: # change has been made, must convert memory to print_memory
+        if self.change: # change has been made, must convert memory to p_memory
             self.memoryConvert('MTP')
 
-        for i in range(len(self.print_memory)):
-            print(self.print_memory[i])
+        for i in range(len(self.p_memory)):
+            print(self.p_memory[i])
         return
     
     def saveMemory(self):
         global new
 
-        if self.change: # change has been made, must convert memory to print_memory
+        if self.change: # change has been made, must convert memory to p_memory
             self.memoryConvert('MTP')
 
         with open("memoryLog.txt", 'r') as f:
@@ -105,8 +105,8 @@ class memory():
         if new:
             with open("memoryLog.txt", 'a') as f:
                 f.write(f"{self.name}:\n")
-                for i in range(len(self.print_memory)):
-                    f.write(str(self.print_memory[i]) + "\n")
+                for i in range(len(self.p_memory)):
+                    f.write(str(self.p_memory[i]) + "\n")
                 f.write("\n")
                 f.close()
                 
@@ -139,7 +139,7 @@ class memory():
                 lines = f.readlines()
                 f.close()
             
-            for memLine in self.print_memory[::-1]:
+            for memLine in self.p_memory[::-1]:
                 lines.insert(targetLine + 1, str(memLine) + "\n")
 
             with open("memoryLog.txt", 'w') as f:
@@ -163,25 +163,25 @@ class memory():
             if line == f"{self.name}:\n":
                 fetching = True
 
-        self.print_memory = fetch
+        self.p_memory = fetch
         self.memoryConvert('PTM')
         return
 
     def memoryConvert(self, mode):
         if mode == 'MTP': # memory to print memory
-            self.print_memory = self.initMemory(self.x, self.y)
+            self.p_memory = self.initMemory(self.x, self.y)
             for i in range(self.x * self.y):
                 try:
-                    self.print_memory[i // self.x][i % self.x] = self.memory[f"0x{hex(i)[2:].zfill(8)}"]
+                    self.p_memory[i // self.x][i % self.x] = self.memory[f"0x{hex(i)[2:].zfill(8)}"]
                 except KeyError:
-                    self.print_memory[i // self.x][i % self.x] = ''
+                    self.p_memory[i // self.x][i % self.x] = ''
             self.change = False
 
         elif mode == 'PTM': # print memory to memory
             self.memory = {}
-            for y in range(len(self.print_memory)):
-                for x in range(len(self.print_memory[y])):
-                    if self.print_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.print_memory[y][x]
+            for y in range(len(self.p_memory)):
+                for x in range(len(self.p_memory[y])):
+                    if self.p_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.p_memory[y][x]
             self.change = False
 
         else:
