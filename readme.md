@@ -27,3 +27,7 @@ It also contains the functions:
 * memoryConvert(mode): converts memory into print_memory (mode = MTP) or vice versa (mode = PTM)
 * malloc(size): allocates an address from the memory using free_memory and returns its address
 * free(address): frees the memory and adds the **address** into free_memory
+
+# TO-DO:
+* hexa only keys
+* malloc

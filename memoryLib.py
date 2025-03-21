@@ -76,6 +76,8 @@ class memory():
         try:
             self.memory[key] = value
             self.change = True
+            self.free_memory.remove(key)
+            return 1
         except IndexError:
             print("Memory index is out of range of the memory!")
             return
@@ -181,7 +183,7 @@ class memory():
             self.memory = {}
             for y in range(len(self.p_memory)):
                 for x in range(len(self.p_memory[y])):
-                    if self.p_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.p_memory[y][x]
+                    if self.p_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.p_memory[y][x]; self.free_memory.remove(f"0x{hex(y * self.x + x)[2:].zfill(8)}")
             self.change = False
 
         else:
@@ -193,4 +195,10 @@ class memory():
         pass
 
     def free(self, address):
-        pass
+        del self.memory[address]
+        self.change = True
+        for i in range(len(self.free_memory)):
+            if i == len(self.free_memory) - 1: self.free_memory.insert(i + 1, address); break
+            if int(self.free_memory[i][2:], 16) < int(address[2:], 16) and int(self.free_memory[i + 1][2:], 16) > int(address[2:], 16):
+                self.free_memory.insert(i + 1, address); break
+        return
