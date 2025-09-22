@@ -17,11 +17,8 @@ class memory():
         """
         Returns the value stored in the memory at the given key.
 
-        Accepts different types of keys:
-
         - empty key: returns None
         - hexadecimal key: '0x' followed by a hexadecimal number
-        - decimal key: a string or int representing a decimal number
 
         Returns None if the key is invalid or out of range of the memory.
         """
@@ -30,19 +27,8 @@ class memory():
             print("Invalid key: empty key!")
             return
 
-        # hexadecimal key
-        if key[0:2] == '0x': pass
-
-        # decimal key
-        elif type(key) == str:
-            try:
-                key = hex(key)
-            except ValueError:
-                print("Invalid key: invalid decimal key!")
-                return
-
         # invalid key type
-        else:
+        if key[0:2] != '0x':
             print("Invalid key type!")
             return
         
@@ -56,20 +42,9 @@ class memory():
         if key == '' or key == '0x' or key == None:
             print("Invalid key: empty key!")
             return
-
-        # hexadecimal key
-        if key[0:2] == '0x': pass
-
-        # decimal key
-        elif type(key) == str:
-            try:
-                key = hex(key)
-            except ValueError:
-                print("Invalid key: invalid decimal key!")
-                return
-
+        
         # invalid key type
-        else:
+        if key[0:2] != '0x':
             print("Invalid key type!")
             return
 

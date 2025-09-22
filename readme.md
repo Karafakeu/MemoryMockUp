@@ -29,7 +29,6 @@ It also contains the functions:
 * free(address): frees the memory and adds the **address** into free_memory
 
 # TO-DO:
-* hexa only keys
 * malloc
 * fix size problem with select
 * select should not be able to select a non-existing memory
