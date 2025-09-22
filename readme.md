@@ -8,8 +8,8 @@ Contains the main loop with the implemented commands for the memoryLib.py. These
 * exit - exit the application 
 * init (name) (x size) (y size) - initiate an empty memory of name and size
 * select (name) - select a memory of name from the memoryLog.txt
-* get (key) - get value of the current working memory at key, decimal or hexadecimal
-* set (key) (value) - set value to the current working memory at key, decimal or hexadecimal
+* get (key) - get value of the current working memory at hexadecimal key
+* set (key) (value) - set value to the current working memory at hexadecimal key
 * print - print the current working memory
 * save - save the current working memory
 * fetch - fetch the current working memory from the memoryLog.txt
