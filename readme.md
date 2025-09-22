@@ -29,4 +29,3 @@ It also contains the functions:
 
 # TO-DO:
 * malloc
-* add action comments and return values

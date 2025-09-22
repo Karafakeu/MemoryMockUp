@@ -8,19 +8,22 @@ def main():
         elif input_.startswith('init'):
             try:
                 memory = memoryLib.memory(input_.split(' ')[1], int(input_.split(' ')[2]), int(input_.split(' ')[3]))
+                print(f"Memory '{input_.split(' ')[1]}' initiated with size {input_.split(' ')[2]}x{input_.split(' ')[3]}")
             except IndexError: print("The amount of arguments for this command is 4")
         elif input_.startswith('select'): 
             try:
                 memory = memoryLib.memory(input_.split(' ')[1], 2, 2)  # ambiguous x and y used, set true size during fetch
-                if memory.fetchMemory() == 0: memory = None
+                if memory.fetchMemory() == 0: memory = None; print("Memory not found in the log")
+                else: print(f"Memory '{input_.split(' ')[1]}' selected")
             except IndexError: print("The amount of arguments for this command is 2")
         elif input_.startswith('get'): 
             try:
-                print(memory.getValue(input_.split(' ')[1]))
+                print(f"Value at {input_.split(' ')[1]}: {memory.getValue(input_.split(' ')[1])}")
             except IndexError: print("The amount of arguments for this command is 2")
         elif input_.startswith('set'): 
             try:
                 memory.setValue(input_.split(' ')[1], input_.split(' ')[2])
+                print(f"Value at {input_.split(' ')[1]} set to {memory.getValue(input_.split(' ')[1])}")
             except IndexError: print("The amount of arguments for this command is 3")
         elif input_ == 'print': memory.printMemory()
         elif input_ == 'save': memory.saveMemory()

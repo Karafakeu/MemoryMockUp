@@ -30,7 +30,7 @@ class memory():
         # invalid key type
         if key[0:2] != '0x':
             print("Invalid key type!")
-            return
+            return 
         
         try:
             return self.memory[key]
@@ -41,12 +41,12 @@ class memory():
     def setValue(self, key, value):
         if key == '' or key == '0x' or key == None:
             print("Invalid key: empty key!")
-            return
+            return 0
         
         # invalid key type
         if key[0:2] != '0x':
             print("Invalid key type!")
-            return
+            return 0
 
         try:
             self.memory[key] = value
@@ -55,7 +55,7 @@ class memory():
             return 1
         except IndexError:
             print("Memory index is out of range of the memory!")
-            return
+            return 0
 
     def printMemory(self):
         if self.change: # change has been made, must convert memory to p_memory
@@ -63,7 +63,7 @@ class memory():
 
         for i in range(len(self.p_memory)):
             print(self.p_memory[i])
-        return
+        return 1
     
     def saveMemory(self):
         global new
@@ -89,7 +89,7 @@ class memory():
                 
         # replace the memory in the log
         else:
-            if input("Are you sure you want to replace the memory in the log? (y/n): ") != 'y': return
+            if input("Are you sure you want to replace the memory in the log? (y/n): ") != 'y': return 0
             writing, count, targetLine, futureLines = True, True, 0, []
             with open("memoryLog.txt", 'r') as f:
                 lines = f.readlines()
@@ -123,7 +123,9 @@ class memory():
                 f.writelines(lines)
                 f.close()
 
-        return
+            print(f"Memory {self.name} saved successfully!")
+
+        return 1
 
     def fetchMemory(self):
         fetch, fetching = [], False
@@ -148,7 +150,10 @@ class memory():
         self.x, self.y = x, y
         self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(self.x * self.y)]
         self.memoryConvert('PTM')
-        return
+
+        print(f"Memory {self.name} fetched successfully!")
+
+        return 1
 
     def memoryConvert(self, mode):
         if mode == 'MTP': # memory to print memory
@@ -169,8 +174,9 @@ class memory():
 
         else:
             print("Invalid mode!")
+            return 0
 
-        return
+        return 1
 
     def malloc(self, size):
         pass
@@ -182,4 +188,4 @@ class memory():
             if i == len(self.free_memory) - 1: self.free_memory.insert(i + 1, address); break
             if int(self.free_memory[i][2:], 16) < int(address[2:], 16) and int(self.free_memory[i + 1][2:], 16) > int(address[2:], 16):
                 self.free_memory.insert(i + 1, address); break
-        return
+        return 1
