@@ -141,6 +141,8 @@ class memory():
             if line == f"{self.name}:\n":
                 fetching = True
 
+        if fetch == []: return 0
+
         self.p_memory = fetch
         x, y = len(self.p_memory), len(self.p_memory[0])
         self.x, self.y = x, y

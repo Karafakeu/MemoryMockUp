@@ -29,5 +29,4 @@ It also contains the functions:
 
 # TO-DO:
 * malloc
-* select should not be able to select a non-existing memory
 * add action comments and return values
