@@ -29,6 +29,4 @@ It also contains the functions:
 
 # TO-DO:
 * malloc
-* fix size problem with select
-* error thrown using 0x0000000F
 * select should not be able to select a non-existing memory

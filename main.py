@@ -11,7 +11,7 @@ def main():
             except IndexError: print("The amount of arguments for this command is 4")
         if input_.startswith('select'): 
             try:
-                memory = memoryLib.memory(input_.split(' ')[1], 2, 2); memory.fetchMemory()
+                memory = memoryLib.memory(input_.split(' ')[1], 2, 2); memory.fetchMemory() # ambiguous x and y used, set true size during fetch
             except IndexError: print("The amount of arguments for this command is 2")
         if input_.startswith('get'): 
             try:
