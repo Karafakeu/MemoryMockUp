@@ -32,3 +32,4 @@ It also contains the functions:
 * hexa only keys
 * malloc
 * fix size problem with select
+* select should not be able to select a non-existing memory
