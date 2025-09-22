@@ -152,6 +152,8 @@ class memory():
 
     def fetchMemory(self):
         fetch, fetching = [], False
+        self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(self.x * self.y)]
+
         with open("memoryLog.txt", 'r') as f:
             lines = f.readlines()
             f.close()

@@ -31,5 +31,4 @@ It also contains the functions:
 # TO-DO:
 * hexa only keys
 * malloc
-* fix fetch error
 * fix size problem with select
