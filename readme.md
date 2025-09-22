@@ -12,7 +12,7 @@ Contains the main loop with the implemented commands for the memoryLib.py. These
 * set (key) (value) - set value to the current working memory at key, decimal or hexadecimal
 * print - print the current working memory
 * save - save the current working memory
-* fetch - fetch teh current working memory from the memoryLog.txt
+* fetch - fetch the current working memory from the memoryLog.txt
 
 # memoryLib.py
 Contains all the main functionality of the memory class and its classes. This class contains properties **name**, **x**, **y**, **change**, **memory (dict)**, **free_memory (list)**, **print_memory (2d list)**.
@@ -31,3 +31,5 @@ It also contains the functions:
 # TO-DO:
 * hexa only keys
 * malloc
+* fix fetch error
+* fix size problem with select
