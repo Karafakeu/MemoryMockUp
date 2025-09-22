@@ -25,10 +25,10 @@ It also contains the functions:
 * saveMemory(): saves current memory into the memoryLog.txt
 * fetchMemory(): fetches the memory under the same name from memoryLog.txt
 * memoryConvert(mode): converts memory into print_memory (mode = MTP) or vice versa (mode = PTM)
-* malloc(size): allocates an address from the memory using free_memory and returns its address
 * free(address): frees the memory and adds the **address** into free_memory
 
 # TO-DO:
 * malloc
 * fix size problem with select
+* error thrown using 0x0000000F
 * select should not be able to select a non-existing memory
