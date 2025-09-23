@@ -325,3 +325,71 @@ class memory():
             else: print("Memory not saved, exiting...")
         
         return 1
+    
+def command_handler(command, current_memory = None):
+    if command == 'exit': current_memory.exit(); return 0
+    elif command.startswith('init'):
+        try:
+            current_memory = memory(command.split(' ')[1], int(command.split(' ')[2]), int(command.split(' ')[3]))
+            print(f"Memory '{command.split(' ')[1]}' initiated with size {command.split(' ')[2]}x{command.split(' ')[3]}")
+            return current_memory
+        except IndexError: print("The amount of arguments for this command is 4")
+    elif command.startswith('select'): 
+        try:
+            current_memory = memory(command.split(' ')[1], 2, 2)  # ambiguous x and y used, set true size during fetch
+            if current_memory.fetchMemory() == 0: current_memory = None; print("Memory not found in the log")
+            else: print(f"Memory '{command.split(' ')[1]}' selected")
+            return current_memory
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command.startswith('getval'): 
+        try:
+            print(f"Value at {command.split(' ')[1]}: {current_memory.getValue(command.split(' ')[1])}")
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command.startswith('setval'): 
+        try:
+            current_memory.setValue(command.split(' ')[1], command.split(' ')[2])
+            print(f"Value at {command.split(' ')[1]} set to {current_memory.getValue(command.split(' ')[1])}")
+        except IndexError: print("The amount of arguments for this command is 3")
+    elif command.startswith('freeval'): 
+        try:
+            current_memory.freeValue(command.split(' ')[1])
+            print(f"Value at {command.split(' ')[1]} freed")
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command == 'print': current_memory.printMemory()
+    elif command == 'save': current_memory.saveMemory()
+    elif command == 'fetch': current_memory.fetchMemory()
+    elif command.startswith('malloc'): 
+        try:
+            print(f'Memory pointer: {current_memory.malloc(int(command.split(" ")[1]))}')
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command.startswith('get'):
+        try:
+            print(f"Malloc variable at {command.split(' ')[1]}: {current_memory.get(command.split(' ')[1])}")
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command.startswith('set'):
+        try:
+            if current_memory.set(command.split(' ')[1], command.split(' ')[2]) == 0: return 1
+            print(f"Malloc variable at {command.split(' ')[1]} set to {current_memory.get(command.split(' ')[1])}")
+        except IndexError: print("The amount of arguments for this command is 3")
+    elif command.startswith('free'):
+        try:
+            current_memory.free(command.split(' ')[1])
+            print(f"Malloc memory at {command.split(' ')[1]} freed")
+        except IndexError: print("The amount of arguments for this command is 2")
+    elif command == 'clear': current_memory.clear()
+    elif command == 'help':
+        print('Available commands:')
+        print('init (name) (x size) (y size) - initiate an empty memory of name and size')
+        print('select (name) - select a memory from the log')
+        print('getval (key) - get value of the current working memory at hexadecimal key')
+        print('setval (key) (value) - set value of the current working memory at hexadecimal key')
+        print('freeval (key) - free the memory at the position of the key')
+        print('print - print the current working memory')
+        print('save - save the current working memory')
+        print('fetch - fetch the memory from the log')
+        print('exit - exit the program')
+        print('malloc (size) - allocate memory in the current working memory, returning a pointer to the first character of the variable')
+        print('get (malloc key) - get value of entire variable at the malloc key location')
+        print('set (malloc key) - set value of entire "variable" at the malloc key location')
+        print('free (malloc key) - free a whole variable from the memory')
+    else: print("Invalid command, for help type 'help'")

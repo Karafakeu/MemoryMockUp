@@ -1,10 +1,10 @@
 # Memory MockUp
 A small project to simulate how a memory works in python, using 2d lists and heap dictionaries. It has things like printing the memory, saving the memory into a log and fetching it back or malloc itself. It consists of 2 parts:
 * main.py - responsible for the user "interface" through the console, handles commands
-* memoryLib.py - contains the memory class and all its functionality
+* memoryLib.py - contains the memory class and all its functionality, with the command function calling other memory class functions based on the inputed command
 
 # main.py
-Contains the main loop with the implemented commands for the memoryLib.py. These commands are:
+Contains the main loop with the implemented commands for the memoryLib.py. These are called through memoryLib.py command_handler. These commands are:
 * exit - exit the application after a prompt
 * init (name) (x size) (y size) - initiate an empty memory of name and size
 * select (name) - select a memory of name from the memoryLog.txt
@@ -39,10 +39,11 @@ It also contains the functions:
 * free(address): frees the malloc address and its joint addresses in memory
 * clear(): resets and clears the whole memory
 * exit(): prompts the user if changed have been made and returns 1 if exit is in order
+* command_handler(command): calls functions based on the command, inputted as the literal string taken from the input
 
 # TO-DO:
 * scripting - basic commands
 * scripting - variables
 * scripting - print like python
 * chaining
-* rewrite main into modular function
+* switch memory saving
