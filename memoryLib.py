@@ -8,6 +8,8 @@ class memory():
         self.memory = {}
         self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(x * y)]
         self.p_memory = self.initMemory(x, y)
+        self.next_malloc = f"0x{hex((x * y))[2:].zfill(8)}"
+        self.current_malloc = {}
 
     def initMemory(self, x, y): return [['' for j in range(x)] for i in range(y)]
     
@@ -47,6 +49,10 @@ class memory():
         if key[0:2] != '0x':
             print("Invalid key type!")
             return 0
+        
+        if key not in self.free_memory:
+            print("Memory address is not free, free it first")
+            return 0
 
         try:
             self.memory[key] = value
@@ -57,12 +63,72 @@ class memory():
             print("Memory index is out of range of the memory!")
             return 0
 
+    def get(self, key):
+        if key == '' or key == '0x' or key == None:
+            print("Invalid key: empty key!")
+            return 0
+        
+        # invalid key type
+        if key[0:2] != '0x':
+            print("Invalid key type!")
+            return 0
+        
+        # key not in malloc memory
+        if key not in self.current_malloc.keys():
+            print("Memory address is not allocated, allocate it first")
+            return 0
+        
+        # get the value
+        result = ''
+        for mem_key in self.current_malloc[key][1]:
+            try:
+                result += self.memory[mem_key]
+            except KeyError:
+                result += ''
+
+        return result
+
+    def set(self, key, value):
+        if key == '' or key == '0x' or key == None:
+            print("Invalid key: empty key!")
+            return 0
+        
+        # invalid key type
+        if key[0:2] != '0x':
+            print("Invalid key type!")
+            return 0
+        
+        # key not in malloc memory
+        if key not in self.current_malloc.keys():
+            print("Memory address is not allocated, allocate it first")
+            return 0
+        
+        if len(value) != self.current_malloc[key][0]:
+            print("Invalid value length, must be of length " + str(self.current_malloc[key][0]))
+            return 0
+        
+        # set the value
+        for i in range(len(self.current_malloc[key][1])):
+            mem_key = self.current_malloc[key][1][i]
+            try:
+                self.memory[mem_key] = value[i]
+                self.change = True
+            except KeyError:
+                print("Memory index is out of range of the memory!")
+                return 0
+
+        return 1
+
     def printMemory(self):
         if self.change: # change has been made, must convert memory to p_memory
             self.memoryConvert('MTP')
 
         for i in range(len(self.p_memory)):
             print(self.p_memory[i])
+
+        for key in self.current_malloc.keys():
+            print(f"malloc( {key} ): {self.current_malloc[key][1]}")
+
         return 1
     
     def saveMemory(self):
@@ -115,6 +181,8 @@ class memory():
             with open("memoryLog.txt", 'r') as f:
                 lines = f.readlines()
                 f.close()
+
+            lines.insert(targetLine + 1, str(self.current_malloc) + "\n")
             
             for memLine in self.p_memory[::-1]:
                 lines.insert(targetLine + 1, str(memLine) + "\n")
@@ -145,10 +213,15 @@ class memory():
 
         if fetch == []: return 0
 
+        if type(fetch[-1]) == dict:
+            self.current_malloc = fetch[-1]
+            fetch = fetch[:-1]
+        
         self.p_memory = fetch
         x, y = len(self.p_memory), len(self.p_memory[0])
         self.x, self.y = x, y
         self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(self.x * self.y)]
+        self.next_malloc = f"0x{hex((self.x * self.y))[2:].zfill(8)}"
         self.memoryConvert('PTM')
 
         print(f"Memory {self.name} fetched successfully!")
@@ -163,14 +236,12 @@ class memory():
                     self.p_memory[i // self.x][i % self.x] = self.memory[f"0x{hex(i)[2:].zfill(8)}"]
                 except KeyError:
                     self.p_memory[i // self.x][i % self.x] = ''
-            self.change = False
 
         elif mode == 'PTM': # print memory to memory
             self.memory = {}
             for y in range(len(self.p_memory)):
                 for x in range(len(self.p_memory[y])):
                     if self.p_memory[y][x] != '': self.memory[f"0x{hex(y * self.x + x)[2:].zfill(8)}"] = self.p_memory[y][x]; self.free_memory.remove(f"0x{hex(y * self.x + x)[2:].zfill(8)}")
-            self.change = False
 
         else:
             print("Invalid mode!")
@@ -179,13 +250,78 @@ class memory():
         return 1
 
     def malloc(self, size):
-        pass
+        self.change = True
+        size = int(size)
 
-    def free(self, address):
-        del self.memory[address]
+        if size <= 0:
+            print("Cannot allocate memory, size must be greater than 0")
+            return 0
+
+        if size > len(self.free_memory):
+            print("Cannot allocate memory, not enough space")
+            return 0 
+        
+        current_pointer = self.next_malloc
+
+        # assign the memory
+        self.current_malloc[current_pointer] = (size, [self.free_memory[i] for i in range(size)])
+        self.free_memory = self.free_memory[size:]
+
+        # find the next free malloc
+        counter = 1
+        while True:
+            self.next_malloc = f"0x{hex(int(self.next_malloc[2:], 16) + counter)[2:].zfill(8)}"
+            counter += 1
+            if self.next_malloc not in self.current_malloc.keys(): break
+            
+        return current_pointer
+
+    def freeValue(self, address):
+        if address in self.memory.keys():
+            del self.memory[address]
+
         self.change = True
         for i in range(len(self.free_memory)):
             if i == len(self.free_memory) - 1: self.free_memory.insert(i + 1, address); break
-            if int(self.free_memory[i][2:], 16) < int(address[2:], 16) and int(self.free_memory[i + 1][2:], 16) > int(address[2:], 16):
-                self.free_memory.insert(i + 1, address); break
+            if int(self.free_memory[i][2:], 16) > int(address[2:], 16):
+                self.free_memory.insert(i, address); break
+            
+        return 1
+    
+    def free(self, address):
+        self.change = True
+
+        # remove values from memory
+        for addr in self.current_malloc[address][1]: self.freeValue(addr)
+
+        # remove from malloc
+        if address in self.current_malloc.keys():
+            del self.current_malloc[address]
+        else:
+            print("Memory place does not contain any value.")
+            return 0
+
+        # assign the next malloc
+        if int(self.next_malloc[2:], 16) > int(address[2:], 16):
+            self.next_malloc = address
+
+        return 1
+    
+    def clear(self):
+        self.memory = {}
+        self.free_memory = [f"0x{hex(i)[2:].zfill(8)}" for i in range(self.x * self.y)]
+        self.p_memory = self.initMemory(self.x, self.y)
+        self.next_malloc = f"0x{hex((self.x * self.y))[2:].zfill(8)}"
+        self.current_malloc = {}
+        self.change = True
+
+        print(f"Memory {self.name} cleared successfully!")
+
+        return 1
+    
+    def exit(self):
+        if self.change:
+            if input("Memory has unsaved changed, save before exit? (y/n): ") == 'y': self.saveMemory()
+            else: print("Memory not saved, exiting...")
+        
         return 1
