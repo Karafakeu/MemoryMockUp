@@ -43,3 +43,4 @@ It also contains the functions:
 # TO-DO:
 * scripting
 * chaining
+* rewrite main into modular function
