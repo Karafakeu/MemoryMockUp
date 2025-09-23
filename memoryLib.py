@@ -191,7 +191,7 @@ class memory():
                 f.writelines(lines)
                 f.close()
 
-            print(f"Memory {self.name} saved successfully!")
+        print(f"Memory {self.name} saved successfully!")
 
         return 1
 
@@ -326,16 +326,33 @@ class memory():
         
         return 1
     
+    def switch(self):
+        if self.change:
+            if input("Memory has unsaved changed, save before switch? (y/n): ") == 'y': self.saveMemory()
+            else: print("Memory not saved, switching...")
+
+        return 1
+
 def command_handler(command, current_memory = None):
-    if command == 'exit': current_memory.exit(); return 0
+    if command == 'exit': 
+        try:
+            current_memory.exit()
+        except AttributeError: pass
+        return 0
     elif command.startswith('init'):
         try:
+            try:
+                current_memory.switch()
+            except AttributeError: pass
             current_memory = memory(command.split(' ')[1], int(command.split(' ')[2]), int(command.split(' ')[3]))
             print(f"Memory '{command.split(' ')[1]}' initiated with size {command.split(' ')[2]}x{command.split(' ')[3]}")
             return current_memory
         except IndexError: print("The amount of arguments for this command is 4")
     elif command.startswith('select'): 
         try:
+            try:
+                current_memory.switch()
+            except AttributeError: pass
             current_memory = memory(command.split(' ')[1], 2, 2)  # ambiguous x and y used, set true size during fetch
             if current_memory.fetchMemory() == 0: current_memory = None; print("Memory not found in the log")
             else: print(f"Memory '{command.split(' ')[1]}' selected")
@@ -345,38 +362,57 @@ def command_handler(command, current_memory = None):
         try:
             print(f"Value at {command.split(' ')[1]}: {current_memory.getValue(command.split(' ')[1])}")
         except IndexError: print("The amount of arguments for this command is 2")
+        except AttributeError: print("No memory selected")
     elif command.startswith('setval'): 
         try:
             current_memory.setValue(command.split(' ')[1], command.split(' ')[2])
             print(f"Value at {command.split(' ')[1]} set to {current_memory.getValue(command.split(' ')[1])}")
         except IndexError: print("The amount of arguments for this command is 3")
+        except AttributeError: print("No memory selected")
     elif command.startswith('freeval'): 
         try:
             current_memory.freeValue(command.split(' ')[1])
             print(f"Value at {command.split(' ')[1]} freed")
         except IndexError: print("The amount of arguments for this command is 2")
-    elif command == 'print': current_memory.printMemory()
-    elif command == 'save': current_memory.saveMemory()
-    elif command == 'fetch': current_memory.fetchMemory()
+        except AttributeError: print("No memory selected")
+    elif command == 'print': 
+        try:
+            current_memory.printMemory()
+        except AttributeError: print("No memory selected")
+    elif command == 'save': 
+        try:
+            current_memory.saveMemory()
+        except AttributeError: print("No memory selected")
+    elif command == 'fetch': 
+        try:
+            current_memory.fetchMemory()
+        except AttributeError: print("No memory selected")
     elif command.startswith('malloc'): 
         try:
             print(f'Memory pointer: {current_memory.malloc(int(command.split(" ")[1]))}')
         except IndexError: print("The amount of arguments for this command is 2")
+        except AttributeError: print("No memory selected")
     elif command.startswith('get'):
         try:
             print(f"Malloc variable at {command.split(' ')[1]}: {current_memory.get(command.split(' ')[1])}")
         except IndexError: print("The amount of arguments for this command is 2")
+        except AttributeError: print("No memory selected")
     elif command.startswith('set'):
         try:
             if current_memory.set(command.split(' ')[1], command.split(' ')[2]) == 0: return 1
             print(f"Malloc variable at {command.split(' ')[1]} set to {current_memory.get(command.split(' ')[1])}")
         except IndexError: print("The amount of arguments for this command is 3")
+        except AttributeError: print("No memory selected")
     elif command.startswith('free'):
         try:
             current_memory.free(command.split(' ')[1])
             print(f"Malloc memory at {command.split(' ')[1]} freed")
         except IndexError: print("The amount of arguments for this command is 2")
-    elif command == 'clear': current_memory.clear()
+        except AttributeError: print("No memory selected")
+    elif command == 'clear': 
+        try:
+            current_memory.clear()
+        except AttributeError: print("No memory selected")
     elif command == 'help':
         print('Available commands:')
         print('init (name) (x size) (y size) - initiate an empty memory of name and size')

@@ -46,4 +46,3 @@ It also contains the functions:
 * scripting - variables
 * scripting - print like python
 * chaining
-* switch memory saving
