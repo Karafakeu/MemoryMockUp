@@ -1,6 +1,7 @@
 # Memory MockUp
-A small project to simulate how a memory works in python, using 2d lists and heap dictionaries. It has things like printing the memory, saving the memory into a log and fetching it back or malloc itself. It consists of 2 parts:
+A small project to simulate how a memory works in python, using 2d lists and heap dictionaries. It has things like printing the memory, saving the memory into a log and fetching it back or malloc itself. It also has an ability to create scripts, just a list of instructions, each instruction on a new line. It consists of 3 parts:
 * main.py - responsible for the user "interface" through the console, handles commands
+* scriptRunner.py - runs a script in a file specified in the argv. Running a script this way forces every action, like saving will automatically overwrite the log etc.
 * memoryLib.py - contains the memory class and all its functionality, with the command function calling other memory class functions based on the inputed command
 
 # main.py
@@ -42,6 +43,5 @@ It also contains the functions:
 * command_handler(command): calls functions based on the command, inputted as the literal string taken from the input
 
 # TO-DO:
-* scripting - basic commands
 * scripting - variables
 * scripting - print like python

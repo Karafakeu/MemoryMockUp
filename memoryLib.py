@@ -131,7 +131,7 @@ class memory():
 
         return 1
     
-    def saveMemory(self):
+    def saveMemory(self, force = False):
         global new
 
         if self.change: # change has been made, must convert memory to p_memory
@@ -155,7 +155,8 @@ class memory():
                 
         # replace the memory in the log
         else:
-            if input("Are you sure you want to replace the memory in the log? (y/n): ") != 'y': return 0
+            if not force:
+                if input("Are you sure you want to replace the memory in the log? (y/n): ") != 'y': return 0
             writing, count, targetLine, futureLines = True, True, 0, []
             with open("memoryLog.txt", 'r') as f:
                 lines = f.readlines()
@@ -319,30 +320,30 @@ class memory():
 
         return 1
     
-    def exit(self):
-        if self.change:
+    def exit(self, force = False):
+        if self.change and not force:
             if input("Memory has unsaved changed, save before exit? (y/n): ") == 'y': self.saveMemory()
             else: print("Memory not saved, exiting...")
         
         return 1
     
-    def switch(self):
-        if self.change:
+    def switch(self, force = False):
+        if self.change and not force:
             if input("Memory has unsaved changed, save before switch? (y/n): ") == 'y': self.saveMemory()
             else: print("Memory not saved, switching...")
 
         return 1
 
-def command_handler(command, current_memory = None):
+def command_handler(command, current_memory = None, force = False):
     if command == 'exit': 
         try:
-            current_memory.exit()
+            current_memory.exit(force)
         except AttributeError: pass
         return 0
     elif command.startswith('init'):
         try:
             try:
-                current_memory.switch()
+                current_memory.switch(force)
             except AttributeError: pass
             current_memory = memory(command.split(' ')[1], int(command.split(' ')[2]), int(command.split(' ')[3]))
             print(f"Memory '{command.split(' ')[1]}' initiated with size {command.split(' ')[2]}x{command.split(' ')[3]}")
@@ -351,7 +352,7 @@ def command_handler(command, current_memory = None):
     elif command.startswith('select'): 
         try:
             try:
-                current_memory.switch()
+                current_memory.switch(force)
             except AttributeError: pass
             current_memory = memory(command.split(' ')[1], 2, 2)  # ambiguous x and y used, set true size during fetch
             if current_memory.fetchMemory() == 0: current_memory = None; print("Memory not found in the log")
@@ -381,7 +382,7 @@ def command_handler(command, current_memory = None):
         except AttributeError: print("No memory selected")
     elif command == 'save': 
         try:
-            current_memory.saveMemory()
+            current_memory.saveMemory(force)
         except AttributeError: print("No memory selected")
     elif command == 'fetch': 
         try:

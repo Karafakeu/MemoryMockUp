@@ -1,0 +1,7 @@
+select ram
+print
+setval 0x00000000 A
+freeval 0x00000019
+setval 0x00000019 T
+print
+save
