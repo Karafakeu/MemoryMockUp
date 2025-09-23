@@ -41,6 +41,8 @@ It also contains the functions:
 * exit(): prompts the user if changed have been made and returns 1 if exit is in order
 
 # TO-DO:
-* scripting
+* scripting - basic commands
+* scripting - variables
+* scripting - print like python
 * chaining
 * rewrite main into modular function
