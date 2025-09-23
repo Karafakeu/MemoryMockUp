@@ -45,4 +45,3 @@ It also contains the functions:
 * scripting - basic commands
 * scripting - variables
 * scripting - print like python
-* chaining
