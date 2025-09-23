@@ -11,11 +11,20 @@ with open(script_dir, 'r') as f:
     f.close()
 
 memory = None
+printing = False
 
 for line in lines:
-    output = memoryLib.command_handler(line.replace('\n', ''), memory, True)
+    command = line
+    if command.startswith('print('):
+        printing = True
+        command = line.replace('print(', '').replace(')', '')
+    command = command.replace('\n', '')
+    output = memoryLib.command_handler(command, memory, True)
     if output == 0: break
     elif output == 1: continue
-    elif output != None: memory = output
+    elif type(output) == memoryLib.memory: memory = output
+    elif output != None and printing: 
+        print(f"Output of command ({command}): {output}") # print() like python
+        printing = False
 
     time.sleep(0.5)

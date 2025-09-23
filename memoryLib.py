@@ -361,7 +361,9 @@ def command_handler(command, current_memory = None, force = False):
         except IndexError: print("The amount of arguments for this command is 2")
     elif command.startswith('getval'): 
         try:
-            print(f"Value at {command.split(' ')[1]}: {current_memory.getValue(command.split(' ')[1])}")
+            value = current_memory.getValue(command.split(' ')[1])
+            print(f"Value at {command.split(' ')[1]}: {value}")
+            return value
         except IndexError: print("The amount of arguments for this command is 2")
         except AttributeError: print("No memory selected")
     elif command.startswith('setval'): 
@@ -395,7 +397,9 @@ def command_handler(command, current_memory = None, force = False):
         except AttributeError: print("No memory selected")
     elif command.startswith('get'):
         try:
-            print(f"Malloc variable at {command.split(' ')[1]}: {current_memory.get(command.split(' ')[1])}")
+            value = current_memory.get(command.split(' ')[1])
+            print(f"Malloc variable at {command.split(' ')[1]}: {value}")
+            return value
         except IndexError: print("The amount of arguments for this command is 2")
         except AttributeError: print("No memory selected")
     elif command.startswith('set'):
