@@ -13,12 +13,18 @@ with open(script_dir, 'r') as f:
 memory = None
 printing, fstring = False, False
 text_before, text_after = '', ''
+echo = True
 
 for line in lines:
     # default changes
     command = line
+    if line == '\n': continue
     if command.startswith('#'): continue
     command = command.replace('\n', '')
+
+    # echo
+    if command == 'echo: true': echo = True; continue
+    elif command == 'echo: false': echo = False; continue
 
     # printing value
     if command.startswith('print('):
@@ -35,7 +41,7 @@ for line in lines:
         text_after = split[1].split('}')[1]
 
     # run command
-    output = memoryLib.command_handler(command, memory, True)
+    output = memoryLib.command_handler(command, memory, True, echo)
     if output == 0: break
     elif output == 1: continue
     elif type(output) == memoryLib.memory: memory = output

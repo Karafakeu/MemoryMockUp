@@ -1,7 +1,8 @@
 # Memory MockUp
-A small project to simulate how a memory works in python, using 2d lists and heap dictionaries. It has things like printing the memory, saving the memory into a log and fetching it back or malloc itself. It also has an ability to create scripts, just a list of instructions, each instruction on a new line. It consists of 3 parts:
+A small project to simulate how a memory works in python, using 2d lists and heap dictionaries. It has things like printing the memory, saving the memory into a log and fetching it back or malloc itself. It also has an ability to create scripts, just a list of instructions, each instruction on a new line. It consists of 3 (technically 4) parts:
 * main.py - responsible for the user "interface" through the console, handles commands
 * scriptRunner.py - runs a script in a file specified in the argv. Running a script this way forces every action, like saving will automatically overwrite the log etc.
+* *.mul - scripting file, as exampleScript.mul, containing a list of commands for the scriptRunner, but also scripting specific commands described below.
 * memoryLib.py - contains the memory class and all its functionality, with the command function calling other memory class functions based on the inputed command
 
 # main.py
@@ -42,6 +43,11 @@ It also contains the functions:
 * exit(): prompts the user if changed have been made and returns 1 if exit is in order
 * command_handler(command): calls functions based on the command, inputted as the literal string taken from the input
 
+# *.mul
+Scripting files for the scriptRunner to execute multiple commands one after another. Contains all common commands from **main.py**, and some scripting specific commands, like:
+* echo: set to either true or false. When false, only neccesary outputs are printed by the memoryLib, like errors or the print command. Action prints are ignored.
+* print(command): prints the output of a command with a preset text. Example: Output of command (getval 0x00000019): T
+* print(f"...{command}..."): works as a common fstring in python, with the ability to add custom text around the output of a command. NOTE: only one command can be put into the fstring!
+
 # TO-DO:
 * scripting - variables
-* scripting - add echo option
