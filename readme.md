@@ -44,4 +44,4 @@ It also contains the functions:
 
 # TO-DO:
 * scripting - variables
-* scripting - print like python with f-string
+* scripting - add echo option
