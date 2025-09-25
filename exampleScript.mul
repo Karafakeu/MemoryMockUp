@@ -9,3 +9,12 @@ print(f"Value found: {getval 0x00000019}, which is good")
 print(getval 0x00000019)
 print
 save
+
+test_var = getval 0x00000019
+allocated = malloc 5
+test_var2 = "test"
+test_var3 = 1234
+
+set |allocated| Ahoj!
+print(get |allocated|)
+print(f"test: {get 0x00000100}, which is close to |test_var| (not really)")

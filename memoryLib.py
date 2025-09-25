@@ -392,7 +392,7 @@ def command_handler(command, current_memory = None, force = False, echo = True):
         except AttributeError: print("No memory selected")
     elif command.startswith('malloc'): 
         try:
-            value = {current_memory.malloc(int(command.split(" ")[1]))}
+            value = current_memory.malloc(int(command.split(" ")[1]))
             if echo: print(f'Memory pointer: {value}')
             return value
         except IndexError: print("The amount of arguments for this command is 2")
@@ -437,3 +437,8 @@ def command_handler(command, current_memory = None, force = False, echo = True):
             print('set (malloc key) - set value of entire "variable" at the malloc key location')
             print('free (malloc key) - free a whole variable from the memory')
     elif echo: print("Invalid command, for help type 'help'")
+
+def is_command(command): 
+    list_of_commands = ['init', 'select', 'getval', 'setval', 'freeval', 'print', 'save', 'fetch', 'exit', 'malloc', 'get', 'set', 'free', 'clear', 'help']
+
+    return command in list_of_commands

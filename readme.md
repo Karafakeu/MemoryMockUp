@@ -48,6 +48,5 @@ Scripting files for the scriptRunner to execute multiple commands one after anot
 * echo: set to either true or false. When false, only neccesary outputs are printed by the memoryLib, like errors or the print command. Action prints are ignored.
 * print(command): prints the output of a command with a preset text. Example: Output of command (getval 0x00000019): T
 * print(f"...{command}..."): works as a common fstring in python, with the ability to add custom text around the output of a command. NOTE: only one command can be put into the fstring!
-
-# TO-DO:
-* scripting - variables
+* X = Y: sets variable X to value Y, either literal value or an output of a function
+* variables: general usecase of variables, either in a command or in either of the print statements. The use is |var_name|, which replaces the expression with the variable value
